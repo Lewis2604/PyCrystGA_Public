@@ -1,8 +1,5 @@
 from deap import base
 from deap import tools
-from deap import creator
-
-from TOPAS import *
 
 toolbox = base.Toolbox()
 

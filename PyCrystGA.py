@@ -3,50 +3,57 @@ from Toolbox import *
 from Statistics import *
 from DataVisualisation import *
 import time
+from Config.Config import *
+from XRDInterfaces import *
+from deap import creator
 import sys
 
 
 class PyCrystGA:
-    def __init__(self, molFile, numMol, directory,
-                 xrdInterface, popSize, numGen,
-                 crossoverPercentage, mutationPercentage,
-                 crossoverType, mutationType,
-                 pctDiffThresh, graphFontSize, graphLabelSize,
-                 graphFileName, graphFileNamePctDiff,  graphDpi):
-        self.molFile = molFile
-        self.numMol = numMol
-        self.directory = directory
-        self.xrdInterface = xrdInterface
-        self.popSize = popSize
-        self.numGen = numGen
-        self.crossoverType = crossoverType
-        self.mutationType = mutationType
+    def __init__(self):
 
-        self.crossoverPercentage = crossoverPercentage
-        self.originalCrossoverPercentage = crossoverPercentage
+        self.molFile = Config.get('mol_file')
+        self.numMol = int(Config.get('num_mol'))
+        self.directory = Config.get('working_directory')
+        self.popSize = int(Config.get('population_size'))
+        self.numGen = int(Config.get('number_of_generations'))
+        self.crossoverType = Config.get('crossover_type')
+        self.mutationType = Config.get('mutation_type')
+        self.XRDInterface = None
+
+        # Consider extracting crossover and mutation classes
+        # and letting a parent class delegate
+        # e.g. Mutation.mutate(structure, 'type')
+        # same for crossover?
+        self.crossoverPercentage = Config.get('crossover_rate')
+        self.originalCrossoverPercentage = Config.get('crossover_rate')
         self.lowerCrossoverRateLimit = self.originalCrossoverPercentage*.7
         self.upperCrossoverRateLimit = self.originalCrossoverPercentage*1.3
 
-        self.mutationPercentage = mutationPercentage
-        self.originalMutationPercentage = mutationPercentage
+        self.mutationPercentage = Config.get('mutation_rate')
+        self.originalMutationPercentage = Config.get('mutation_rate')
         self.lowerMutationRateLimit = self.originalCrossoverPercentage*.7
         self.upperMutationRateLimit = self.originalCrossoverPercentage*1.3
 
-        self.pctDiffThresh = pctDiffThresh
-        self.graphFontSize = graphFontSize
-        self.graphLabelSize = graphLabelSize
-        self.graphFileName = graphFileName
-        self.graphFileNamePctDiff = graphFileNamePctDiff
-        self.graphDpi = graphDpi
+        self.pctDiffThresh = Config.get('percentage_difference_threshold')
+
+        # Consider moving this into its own class
+        # Pass a structure to it & let it handle plotting
+        self.graphFontSize = Config.get('font_size')
+        self.graphLabelSize = Config.get('label_size')
+        self.graphFileName = Config.get('file_name')
+        self.graphFileNamePctDiff = Config.get('percentage_difference_name')
+        self.graphDpi = Config.get('dpi')
 
         self.crossoverHistory = []
         self.mutationHistory = []
 
         self.population = None
-        self.xrdInterface.setDirectory(directory + "XRD/")
         self.shouldStop = False
         #@todo figure out how to choose the type of genetic operators that you want,
         # @todo so that you can use the appropriate graph plotting method
+
+        # Do you need all of these booleans?
         self.staticCrossover = True
         self.staticMutation = True
 
@@ -61,7 +68,12 @@ class PyCrystGA:
         self.endTime = None
         self.timeElapsed = None
 
+    def setXrdInterface(self, XRDInterface):
+        self.XRDInterface = XRDInterface
+
     def setGeneticOperatorType(self):
+        # Consider having a dynamic function call
+        # or some sort of dict mapping to remove this
         if self.crossoverType == 0:
             self.staticCrossover = True
         if self.mutationType == 0:
@@ -79,6 +91,8 @@ class PyCrystGA:
 
     def start(self):
         self.startTime = time.time()
+
+        # I feel like stats should probably be extracted to its own class?
         Statistics.writeRunInfoToFile(self.directory+'Statistics/', self.numGen,
                                       self.popSize, self.crossoverPercentage, self.mutationPercentage)
         Statistics.createFitnessLog(Statistics())
@@ -110,6 +124,7 @@ class PyCrystGA:
             print(self.timeElapsed, file=open(self.directory + 'Statistics/' + "Time.txt", "a"))
             self.simpleStoppingCriteria()
 
+        # This could be extracted to a statistics class??
         print("Elite", file=open(self.directory + 'Statistics/' + "pct_diff.txt", "a"))
         print(self.population.eltPctDiff, file=open(self.directory + 'Statistics/' + "pct_diff.txt", "a"))
         print("Mutant", file=open(self.directory + 'Statistics/' + "pct_diff.txt", "a"))
@@ -123,9 +138,11 @@ class PyCrystGA:
         print(self.crossoverHistory)
         print(self.mutationHistory)
 
+        # Extract to some stats class?
         DataVisualisation.plotGraph(DataVisualisation(), self, self.graphFontSize, self.graphLabelSize,
                                     self.graphFileName, self.directory, self.graphDpi)
 
+        # Again, extract some of this to a stats class?
         if self.linearDynamicCrossover \
                 or self.linearDynamicMutation\
                 or self.exponentialDynamicCrossover\
@@ -152,6 +169,7 @@ class PyCrystGA:
     #     self.stoppingCriteria()
 
     def makePopulation(self):
+        # ????
         creator.create("FitnessMax", base.Fitness, weights=(1.0, 1.0))
 
         self.population = Population(self.molFile,
@@ -163,7 +181,7 @@ class PyCrystGA:
 
     def evaluateFitness(self):
         #@todo runs input file
-        fitnesses = map(self.xrdInterface.evaluate, self.population.structures)
+        fitnesses = map(self.XRDInterface.evaluate, self.population.structures)
         for structure, fit in zip(self.population.structures, fitnesses):
             structure.fitness.values = fit
 

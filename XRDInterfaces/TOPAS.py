@@ -2,19 +2,15 @@ import re
 import os
 import subprocess
 import string
+from Config.Config import *
 
 class TOPAS:
     def __init__(self, topasPath, templateFile):
-        self.directory = None
+        self.directory = Config.get('working_directory') + '/XRD'
         self.topasPath = topasPath
         self.templateFile = templateFile
 
-    def setDirectory(self, directory):
-        self.directory = directory
-
     def makeInputFile(self, structure):
-        if self.directory is None:
-            raise Exception('No TOPAS directory set')
 
         taString = 'Rotate_about_points'
         rotString = 'rotate'
@@ -24,9 +20,9 @@ class TOPAS:
         tranRegex = r'(\b' + tranString + r'\s*\s+)([+-]?\d+\.?\d*)'
 
         # Used for Lamarckian evolution
-        #taRegex = r'(\b' + taString + r'\s*\(\s*@\s+)([+-]?\d+\.?\d*)'
-        #rotRegex = r'(\b' + rotString + r'\s*@\s+)([+-]?\d+\.?\d*)'
-        #tranRegex = r'(\b' + tranString + r'\s*@\s+)([+-]?\d+\.?\d*)'
+        # taRegex = r'(\b' + taString + r'\s*\(\s*@\s+)([+-]?\d+\.?\d*)'
+        # rotRegex = r'(\b' + rotString + r'\s*@\s+)([+-]?\d+\.?\d*)'
+        # tranRegex = r'(\b' + tranString + r'\s*@\s+)([+-]?\d+\.?\d*)'
 
         ta = re.compile(taRegex)
         rot = re.compile(rotRegex)
@@ -106,7 +102,7 @@ class TOPAS:
         self.runInputFile(inputFile)
         rwp = self.getRwpFromInputFile(inputFile)
         self.fileRemoval(structure)
-        return 1./float(rwp),
+        return 1. / float(rwp),
 
     def fileRemoval(self, structure):
         os.remove(self.directory + str(structure.identifier) + '.inp')

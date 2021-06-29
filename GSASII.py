@@ -5,7 +5,7 @@ import numpy as np
 import sys
 sys.path.insert(0, "C:/Users/Lewis/Anaconda3/envs/G2GA/GSASII")
 
-from DevStructure import *
+from Structure import *
 
 
 import GSASIIscriptable as G2sc

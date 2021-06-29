@@ -25,11 +25,6 @@ class Structure:
         self.generatePositions()
         self.generateOrientations()
 
-    # def funct1(self, arg1, **arg2):
-    #
-    # def funct1(self, arg1, arg2):
-
-
     def generateTorsions(self):
         tors_list = TorsionFingerprints.CalculateTorsionLists(
             Chem.MolFromMolFile(self.molFile)

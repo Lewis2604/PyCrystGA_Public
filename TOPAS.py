@@ -84,7 +84,7 @@ class TOPAS:
 
     def runInputFile(self, inputFile):
         subprocess.run(os.path.normpath(self.topasPath) + ' ' + os.path.normpath(
-            inputFile))
+            inputFile), stderr=subprocess.STDOUT, stdout=subprocess.DEVNULL)
 
     def getRwpFromInputFile(self, inputFile):
         rwpString = 'r_wp'

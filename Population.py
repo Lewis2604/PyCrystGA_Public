@@ -21,10 +21,14 @@ class Population:
         self.eltFitnessMax = []
         self.eltFitnessAvg = []
         self.eltFitnessStdDev = []
+        #@todo add values to this list
+        self.eltRwpStdDev = []
 
         self.mutFitnessMax = []
         self.mutFitnessAvg = []
         self.mutFitnessStdDev = []
+        #@todo add values to this list
+        self.mutRwpStdDev = []
 
         self.make(self.molFile, self.numMol, self.popSize)
 

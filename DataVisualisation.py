@@ -20,16 +20,17 @@ class DataVisualisation():
         fig.subplots_adjust(hspace=0.05)
 
         ax2.set_xlabel("Generation", fontsize=fontSize)
-        ax1.set_ylabel("Fitness / %", fontsize=fontSize)
-        ax2.set_ylabel(r'$\sigma$ / %$^{-1}$', fontsize=fontSize)
+        ax1.set_ylabel("R$_{wp}$ / %", fontsize=fontSize)
+        ax2.set_ylabel(r'$\sigma$ / %', fontsize=fontSize)
+        # ax2.set_ylabel(r'$\sigma$ / %$^{-1}$', fontsize=fontSize)
 
         ax1.tick_params(axis='both', which='major', labelsize=labelSize)
         ax2.tick_params(axis='both', which='major', labelsize=labelSize)
 
-        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.mutFitnessMax, ".b-", label="Best Fitness")
-        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.mutFitnessAvg, ".r-", label="Average Fitness")
+        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessMax, ".b-", label="Best Fitness")
+        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessAvg, ".r-", label="Average Fitness")
         # ax2.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessStdDev, ".g-", label="Elite Standard Deviation")
-        ax2.plot(PyCrystGA.population.generationNum, PyCrystGA.population.mutFitnessStdDev, ".g-", label="Standard Deviation")
+        ax2.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltRwpStdDev, ".g-", label="Standard Deviation")
 
         ax1.set_title(
             "Population Size: " + str(PyCrystGA.popSize) + ', Crossover Rate: ' + str(PyCrystGA.originalCrossoverPercentage)

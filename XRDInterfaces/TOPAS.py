@@ -6,7 +6,7 @@ from Config.Config import *
 
 class TOPAS:
     def __init__(self, topasPath, templateFile):
-        self.directory = Config.get('working_directory') + '/XRD'
+        self.directory = Config.get('working_directory') + 'XRD'
         self.topasPath = topasPath
         self.templateFile = templateFile
 
@@ -75,12 +75,23 @@ class TOPAS:
 
         return self.getInputFilePath(structure.identifier)
 
+    def makeBatchFile(self, population):
+        print('Batch')
+        myBat = open(self.directory + "TOPASBatch.bat", 'w+')
+        for structure in population:
+            print(str(self.topasPath + " " +self.getInputFilePath(structure.identifier)))
+            myBat.write(self.topasPath + " " +self.getInputFilePath(structure.identifier))
+        myBat.close()
+        return
+
     def getInputFilePath(self, identifier):
         return self.directory + str(identifier) + '.inp'
 
     def runInputFile(self, inputFile):
         subprocess.run(os.path.normpath(self.topasPath) + ' ' + os.path.normpath(
             inputFile), stderr=subprocess.STDOUT, stdout=subprocess.DEVNULL)
+        # subprocess.run(os.path.normpath(self.topasPath) + ' ' + os.path.normpath(
+        #     inputFile))
 
     def getRwpFromInputFile(self, inputFile):
         rwpString = 'r_wp'

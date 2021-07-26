@@ -52,7 +52,7 @@ class Statistics():
             print(row, file=open(filePath, "a"))
 
     def recordElitePopulationStatistics(self, directory, population, generation):
-
+        rwp = []
         for structure in population.structures:
             self.writeToFile([
                 generation,
@@ -62,6 +62,9 @@ class Statistics():
                 structure.positions,
                 structure.fitness.values
             ], directory + "FitnessHistory.txt")
+            rwp.append(1/list(structure.fitness.values)[0])
+
+        population.eltRwpStdDev.append(np.std(rwp))
 
         self.logbook.record(gen=generation, **self.multiStats.compile(population.structures))
         self.recordElt = self.stats.compile(population.structures)
@@ -97,7 +100,7 @@ class Statistics():
         return
 
     def recordMutantPopulationStatistics(self, directory, population, generation):
-
+        rwp = []
         for structure in population.structures:
             self.writeToFile([
                 'Mutant',
@@ -107,6 +110,9 @@ class Statistics():
                 structure.positions,
                 structure.fitness.values
             ], directory + "FitnessHistory.txt")
+            rwp.append(1/list(structure.fitness.values)[0])
+
+        population.mutRwpStdDev.append(np.std(rwp))
 
         self.logbook.record(gen=generation, **self.multiStats.compile(population.structures))
         self.recordMut = self.stats.compile(population.structures)

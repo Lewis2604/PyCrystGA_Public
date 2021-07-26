@@ -2,9 +2,6 @@
 #      Paths
 # -------------------
 
-# Can number of mols be figured out from the
-# mol file??
-
 num_mol: "1"
 mol_file: "C:/PhD/Year_3/Algorithm/TFB Crystal Structure/TFB_labels.mol"
 working_directory: "C:/PhD/Year_3/Algorithm/Test/LinearDynamic/1/"
@@ -12,14 +9,14 @@ working_directory: "C:/PhD/Year_3/Algorithm/Test/LinearDynamic/1/"
 # -------------------
 #     Population
 # -------------------
-population_size: 20
-number_of_generations: 5
+population_size: 100
+number_of_generations: 500
 
 # -------------------
 #      Crossover
 # -------------------
 crossover_type: 0
-crossover_rate: 0.1
+crossover_rate: 0.5
 percentage_difference_threshold: 5
 
 # -------------------
@@ -36,3 +33,5 @@ font_size: 14
 label_size: 12
 file_name: "PyCrystGA"
 percentage_difference_name: "PyCrystGA_PctDiff_Graph"
+
+

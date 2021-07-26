@@ -7,6 +7,7 @@ from Config.Config import *
 from XRDInterfaces import *
 from deap import creator
 import sys
+import math
 
 
 class PyCrystGA:
@@ -71,6 +72,15 @@ class PyCrystGA:
     def setXrdInterface(self, XRDInterface):
         self.XRDInterface = XRDInterface
 
+    def setDirectory(self, Directory):
+        self.directory = Directory
+
+    def setCrossover(self, xover):
+        self.crossoverPercentage = xover
+
+    def setMutation(self, mut):
+        self.mutationPercentage = mut
+
     def setGeneticOperatorType(self):
         # Consider having a dynamic function call
         # or some sort of dict mapping to remove this
@@ -91,20 +101,16 @@ class PyCrystGA:
 
     def start(self):
         self.startTime = time.time()
-
-        # I feel like stats should probably be extracted to its own class?
         Statistics.writeRunInfoToFile(self.directory+'Statistics/', self.numGen,
                                       self.popSize, self.crossoverPercentage, self.mutationPercentage)
         Statistics.createFitnessLog(Statistics())
         self.makePopulation()
-        # self.crossoverHistory.append(self.crossoverPercentage)
-        # self.mutationHistory.append(self.mutationPercentage)
         self.setGeneticOperatorType()
-        # print("Genetic Operator Type")
-        # print(self.staticCrossover, self.staticMutation, self.linearDynamicCrossover,
-        #   self.linearDynamicMutation, self.exponentialDynamicCrossover, self.exponentialDynamicMutation)
         while not self.shouldStop:
             self.currentGeneration += 1
+            print("Generation")
+            print(self.currentGeneration)
+            # self.XRDInterface.makeBatchFile(self.population.structures)
             self.evaluateFitness()
             self.crossover()
             self.evaluateFitness()
@@ -129,19 +135,9 @@ class PyCrystGA:
         print(self.population.eltPctDiff, file=open(self.directory + 'Statistics/' + "pct_diff.txt", "a"))
         print("Mutant", file=open(self.directory + 'Statistics/' + "pct_diff.txt", "a"))
         print(self.population.mutPctDiff, file=open(self.directory + 'Statistics/' + "pct_diff.txt", "a"))
-
-        # self.endTime = time.time()
-        # self.timeElapsed = self.endTime - self.startTime
-        # print(self.currentGeneration, file=open(self.directory + 'Statistics/' + "Time.txt", "a"))
-        # print(self.timeElapsed, file=open(self.directory + 'Statistics/' + "Time.txt", "a"))
-
-        print(self.crossoverHistory)
-        print(self.mutationHistory)
-
         # Extract to some stats class?
         DataVisualisation.plotGraph(DataVisualisation(), self, self.graphFontSize, self.graphLabelSize,
                                     self.graphFileName, self.directory, self.graphDpi)
-
         # Again, extract some of this to a stats class?
         if self.linearDynamicCrossover \
                 or self.linearDynamicMutation\
@@ -152,13 +148,34 @@ class PyCrystGA:
 
     #@todo put stopping criteria here KEEP self.shouldStop = True
     def simpleStoppingCriteria(self):
-        if self.currentGeneration > 50:
-            if np.average(self.population.percentageDiff[-50:])<1:
-                self.shouldStop = True
-                self.endTime = time.time()
+        print("Check 1")
+        print(self.population.eltFitnessMax)
+        # print(np.std(self.population.eltFitnessMax))
         if self.currentGeneration == self.numGen:
             self.shouldStop = True
             self.endTime = time.time()
+        if self.currentGeneration > self.numGen*0.1:
+            print("Elite StdDev")
+            print(self.population.eltFitnessMax[math.floor(-self.numGen*0.1)])
+            print(self.population.eltFitnessMax[-1])
+            diff = self.population.eltFitnessMax[math.floor(-self.numGen*0.1)] - self.population.eltFitnessMax[-1]
+            print(diff)
+            if np.average(self.population.eltPctDiff[math.floor(-self.numGen*0.1):]) < 1:
+                print("stop1")
+                self.shouldStop = True
+                self.endTime = time.time()
+            if diff == 0:
+                print("stop2")
+                self.shouldStop = True
+                self.endTime = time.time()
+
+
+
+            # if np.std(self.population.eltFitnessMax[math.floor(-self.numGen*0.1):]) == 0:
+            #     print("stop2")
+            #     self.shouldStop = True
+            #     self.endTime = time.time()
+
 
     # def simpleStoppingCriteria(self):
     #     if self.currentGeneration == self.numGen:
@@ -184,6 +201,10 @@ class PyCrystGA:
         fitnesses = map(self.XRDInterface.evaluate, self.population.structures)
         for structure, fit in zip(self.population.structures, fitnesses):
             structure.fitness.values = fit
+            #@todo can't do this as the rwp list gets longers as the algorithm proceeds
+            # structure.rwp.append(1/fit[0])
+
+
 
     #@todo checkGeneration has to be greater than 20 (GUI slider start at 20)
     # def dynamicCrossover(self, checkGeneration, crossoverReduction, crossoverIncrease):

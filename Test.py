@@ -17,7 +17,6 @@ print("Script has started")
 # Algorithm2.setDirectory("C:/PhD/Year_3/Algorithm/Test/FitnessCalcComparison/2/")
 # Algorithm2.start()
 
-TOPAS = TOPAS('C:/Topas-6/tc.exe', r"C:\PhD\Year_3\TFB1_GA_p21n.inp")
 
 params = [{'xover': 0.9, 'mut': 0.1},
           {'xover': 0.9, 'mut': 0.3},
@@ -45,17 +44,18 @@ params = [{'xover': 0.9, 'mut': 0.1},
           {'xover': 0.1, 'mut': 0.7},
           {'xover': 0.1, 'mut': 0.9}]
 
+TOPAS = TOPAS('C:/Topas-6/tc.exe', "C:/PhD/Year_3/TFB1_GA_p21n.inp")
 for param in params:
     count = 1
     for i in range(5):
         while True:
             try:
                 Algorithm = PyCrystGA()
-                Algorithm.setDirectory("C:/PhD/Year_3/Algorithm/Test/Restart/Run (" + str(count) + ")/")
-                TOPAS.setDirectory(Algorithm.directory)
-                Algorithm.setXrdInterface(TOPAS)
                 Algorithm.setCrossover(param['xover'])
                 Algorithm.setMutation(param['mut'])
+                Algorithm.setDirectory("C:/PhD/Year_3/Algorithm/Test/Restart/Run(" + str(count) + ")/") #@ todo cannot contain whitespace
+                TOPAS.setDirectory(Algorithm.directory)
+                Algorithm.setXrdInterface(TOPAS)
                 Algorithm.start()
                 count += 1
                 break

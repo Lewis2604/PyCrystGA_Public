@@ -111,10 +111,15 @@ class PyCrystGA:
             print("Generation")
             print(self.currentGeneration)
             # self.XRDInterface.makeBatchFile(self.population.structures)
+            print("fuck0")
             self.evaluateFitness()
+            print("fuck1")
             self.crossover()
+            print("fuck2")
             self.evaluateFitness()
+            print("fuck3")
             self.elitistSelection()
+            print("fuck4")
             #@todo energetic optimisation
             Statistics.recordElitePopulationStatistics(Statistics(), self.directory+'Statistics/',
                                                        self.population, self.currentGeneration)

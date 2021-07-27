@@ -27,8 +27,8 @@ class DataVisualisation():
         ax1.tick_params(axis='both', which='major', labelsize=labelSize)
         ax2.tick_params(axis='both', which='major', labelsize=labelSize)
 
-        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessMax, ".b-", label="Best Fitness")
-        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessAvg, ".r-", label="Average Fitness")
+        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessMax, ".b-", label="R$_{wp}$ Best")
+        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessAvg, ".r-", label="R$_{wp}$ Average")
         # ax2.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessStdDev, ".g-", label="Elite Standard Deviation")
         ax2.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltRwpStdDev, ".g-", label="Standard Deviation")
 

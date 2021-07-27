@@ -14,7 +14,6 @@ class TOPAS:
         self.directory = directory + 'XRD/'
 
     def makeInputFile(self, structure):
-
         taString = 'Rotate_about_points'
         rotString = 'rotate'
         tranString = 't[a-c]'
@@ -88,13 +87,14 @@ class TOPAS:
         return
 
     def getInputFilePath(self, identifier):
+        print(self.directory)
         return self.directory + str(identifier) + '.inp'
 
     def runInputFile(self, inputFile):
-        subprocess.run(os.path.normpath(self.topasPath) + ' ' + os.path.normpath(
-            inputFile), stderr=subprocess.STDOUT, stdout=subprocess.DEVNULL)
         # subprocess.run(os.path.normpath(self.topasPath) + ' ' + os.path.normpath(
-        #     inputFile))
+        #     inputFile), stderr=subprocess.STDOUT, stdout=subprocess.DEVNULL)
+        subprocess.run(os.path.normpath(self.topasPath) + ' ' + os.path.normpath(
+            inputFile))
 
     def getRwpFromInputFile(self, inputFile):
         rwpString = 'r_wp'
@@ -113,9 +113,13 @@ class TOPAS:
 
     def evaluate(self, structure):
         inputFile = self.makeInputFile(structure)
+        print("q")
         self.runInputFile(inputFile)
+        print("q1")
         rwp = self.getRwpFromInputFile(inputFile)
+        print('q2')
         self.fileRemoval(structure)
+        print("q3")
         return 1. / float(rwp),
 
     def fileRemoval(self, structure):

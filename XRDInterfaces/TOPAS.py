@@ -6,9 +6,12 @@ from Config.Config import *
 
 class TOPAS:
     def __init__(self, topasPath, templateFile):
-        self.directory = Config.get('working_directory') + 'XRD'
+        self.directory = None # Config.get('working_directory') + 'XRD/' #@todo this is the problem
         self.topasPath = topasPath
         self.templateFile = templateFile
+
+    def setDirectory(self, directory):
+        self.directory = directory + 'XRD/'
 
     def makeInputFile(self, structure):
 

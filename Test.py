@@ -51,10 +51,11 @@ for param in params:
         while True:
             try:
                 Algorithm = PyCrystGA()
+                Algorithm.setDirectory("C:/PhD/Year_3/Algorithm/Test/Restart/Run (" + str(count) + ")/")
+                TOPAS.setDirectory(Algorithm.directory)
                 Algorithm.setXrdInterface(TOPAS)
                 Algorithm.setCrossover(param['xover'])
                 Algorithm.setMutation(param['mut'])
-                Algorithm.setDirectory("C:/PhD/Year_3/Algorithm/Test/Restart/Run (" + str(count) + ")/")
                 Algorithm.start()
                 count += 1
                 break

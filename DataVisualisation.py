@@ -20,15 +20,15 @@ class DataVisualisation():
         fig.subplots_adjust(hspace=0.05)
 
         ax2.set_xlabel("Generation", fontsize=fontSize)
-        ax1.set_ylabel("R$_{wp}$ / %", fontsize=fontSize)
+        ax1.set_ylabel("$R_{wp}$ / %", fontsize=fontSize)
         ax2.set_ylabel(r'$\sigma$ / %', fontsize=fontSize)
         # ax2.set_ylabel(r'$\sigma$ / %$^{-1}$', fontsize=fontSize)
 
         ax1.tick_params(axis='both', which='major', labelsize=labelSize)
         ax2.tick_params(axis='both', which='major', labelsize=labelSize)
 
-        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessMax, ".b-", label="R$_{wp}$ Best")
-        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessAvg, ".r-", label="R$_{wp}$ Average")
+        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessMax, ".b-", label="$R_{wp}$ Best")
+        ax1.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessAvg, ".r-", label="$R_{wp}$ Average")
         # ax2.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltFitnessStdDev, ".g-", label="Elite Standard Deviation")
         ax2.plot(PyCrystGA.population.generationNum, PyCrystGA.population.eltRwpStdDev, ".g-", label="Standard Deviation")
 

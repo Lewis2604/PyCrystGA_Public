@@ -2,16 +2,100 @@ import re
 import os
 import subprocess
 import string
+import time
+from pprint import pprint
+
 from Config.Config import *
 
 class TOPAS:
     def __init__(self, topasPath, templateFile):
-        self.directory = None # Config.get('working_directory') + 'XRD/' #@todo this is the problem
+        self.directory = Config.get('working_directory') + 'XRD/' #@todo this is the problem
         self.topasPath = topasPath
         self.templateFile = templateFile
 
     def setDirectory(self, directory):
         self.directory = directory + 'XRD/'
+
+    def makeNewInputFile(self, population, structureList, directory):
+        population.parameterDict.clear()
+        numTors = []
+        numPos = []
+        numOrient = []
+        contents = []
+        newContents = []
+
+        for structure in structureList:
+            numTors.append(len(structure.torsions))
+            numPos.append(len(structure.positions))
+            numOrient.append(len(structure.orientations))
+            for i in range(numTors[0]):
+                population.parameterDict['Tors'+str(i)].append(str(structure.torsions[i]))
+            for i in range(numPos[0]):
+                population.parameterDict['Pos'+str(i)].append(str(structure.positions[i]))
+            for i in range(numOrient[0]):
+                population.parameterDict['Orient'+str(i)].append(str(structure.orientations[i]))
+
+        # print('dictionary')
+        # pprint(population.parameterDict)
+
+        with open(r'C:\PhD\Year_3\TFB1_GA_p21n_sequential.inp', 'r') as inp:
+            for line in inp:
+                contents.append(line)
+
+        fileOutput = '\s*out\s*-'
+        numRuns = '\s*num_runs'
+        rotString = '#\s*list\s*rotate_q[a-z]_list\s*{}'
+        tranString = '#\s*list\s*translate_t[a-z]_list\s*{}'
+        taString = '#\s*list\s*t' + '[0-9]+' + '_list\s*{}'
+
+        file = re.compile(fileOutput)
+        run = re.compile(numRuns)
+        rot = re.compile(rotString)
+        tran = re.compile(tranString)
+        ta = re.compile(taString)
+
+        letterList = string.ascii_lowercase
+        numberList = range(1, 1000)
+        x, y, z = 0, 0, 0
+
+        for line in contents:
+            a = rot.search(line)
+            if a:
+                rotString1 = ','.join(population.parameterDict['Orient'+str(x)]).replace(',', ' ')
+                line = rot.sub('#list rotate_q' + letterList[-1-x] + '_list { ' + rotString1 + ' }', line)
+                x+=1
+            b = tran.search(line)
+            if b:
+                tranString1 = ','.join(population.parameterDict['Pos'+str(y)]).replace(',', ' ')
+                line = tran.sub('#list translate_t' + letterList[y] + '_list { ' + tranString1 + ' }', line)
+                y+=1
+            c = ta.search(line)
+            if c:
+                taString1 = ','.join(population.parameterDict['Tors'+str(z)]).replace(',', ' ')
+                line = ta.sub('#list t' + str(numberList[z]) + '_list { ' + taString1 + ' }', line)
+                z+=1
+            d = run.search(line)
+            if d:
+                line = run.sub('num_runs ' + str(len(population.structures)), line)
+            e = file.search(line)
+            if e:
+                # print(self.directory)
+                # newPath = os.path.normpath(self.directory) + "\\"
+                # print('newPath')
+                # print(newPath)
+                line = file.sub('   out ' + '\"' + self.directory + "rwp.txt" + '\"' + " append", line)
+                # line = file.sub(self.directory.replace('/', '\\'), line)
+                # line = file.sub(str(os.path.normpath(self.directory)), line)
+                # line = file.sub('   out' + "\"" + os.path.normpath(self.directory) + "\"" + 'append', line)
+
+
+            newContents.append(line)
+
+        with open((directory + str(population.identifier) + '.inp'), 'w') as out:
+            out.writelines(newContents)
+        return directory + str(population.identifier) + '.inp'
+
+
 
     def makeInputFile(self, structure):
         taString = 'Rotate_about_points'
@@ -87,14 +171,13 @@ class TOPAS:
         return
 
     def getInputFilePath(self, identifier):
-        print(self.directory)
         return self.directory + str(identifier) + '.inp'
 
     def runInputFile(self, inputFile):
-        # subprocess.run(os.path.normpath(self.topasPath) + ' ' + os.path.normpath(
-        #     inputFile), stderr=subprocess.STDOUT, stdout=subprocess.DEVNULL)
         subprocess.run(os.path.normpath(self.topasPath) + ' ' + os.path.normpath(
-            inputFile))
+            inputFile), stderr=subprocess.STDOUT, stdout=subprocess.DEVNULL)
+        # subprocess.run(os.path.normpath(self.topasPath) + ' ' + os.path.normpath(
+        #     inputFile))
 
     def getRwpFromInputFile(self, inputFile):
         rwpString = 'r_wp'
@@ -111,15 +194,41 @@ class TOPAS:
         fOpen.close()
         return newRwp
 
-    def evaluate(self, structure):
-        inputFile = self.makeInputFile(structure)
-        print("q")
+    def newEvaluate(self, inputFile):
         self.runInputFile(inputFile)
-        print("q1")
+        fitnessFile = self.directory + "rwp.txt"
+        fOpen = open(fitnessFile, "r")
+        rwp = []
+        for line in fOpen:
+            rwp.append((1. /float(line),))
+        # print('zap')
+        # print(rwp)
+        fOpen.close()
+        if os.path.exists(fitnessFile):
+            os.remove(fitnessFile)
+        else:
+            print(fitnessFile)
+        return rwp
+
+
+
+        # rwp = self.getRwpFromInputFile(inputFile)
+        # self.fileRemoval(structure)
+
+    def evaluate(self, structure):
+        start = time.time()
+        inputFile = self.makeInputFile(structure)
+        t1 = time.time()
+        time1 = t1-start
+        # print("time1")
+        # print(time1)
+        self.runInputFile(inputFile)
+        t2 = time.time()
+        time2 = t2-t1
+        # print('time2')
+        # print(time2)
         rwp = self.getRwpFromInputFile(inputFile)
-        print('q2')
         self.fileRemoval(structure)
-        print("q3")
         return 1. / float(rwp),
 
     def fileRemoval(self, structure):

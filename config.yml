@@ -9,8 +9,8 @@ working_directory: "C:/PhD/Year_3/Algorithm/Test/LinearDynamic/1/"
 # -------------------
 #     Population
 # -------------------
-population_size: 100
-number_of_generations: 500
+population_size: 10
+number_of_generations: 5
 
 # -------------------
 #      Crossover

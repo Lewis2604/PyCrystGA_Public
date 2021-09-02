@@ -1,5 +1,6 @@
 from Structure import *
 import copy
+import collections
 
 
 class Population:
@@ -7,12 +8,15 @@ class Population:
         self.molFile = molFile
         self.numMol = numMol
         self.popSize = popSize
+        self.identifier = token_hex()
 
         self.structures = []
         self.clones = []
         self.crossovers = []
         self.xoverOffspring = []
         self.mutants = []
+
+        self.parameterDict = collections.defaultdict(list)
 
         self.eltPctDiff = []
         self.mutPctDiff = []

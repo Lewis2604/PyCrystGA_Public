@@ -9,8 +9,8 @@ working_directory: "C:/PhD/Year_3/Algorithm/Test/LinearDynamic/1/"
 # -------------------
 #     Population
 # -------------------
-population_size: 10
-number_of_generations: 5
+population_size: 100
+number_of_generations: 1600
 
 # -------------------
 #      Crossover
@@ -20,18 +20,62 @@ crossover_rate: 0.5
 percentage_difference_threshold: 5
 
 # -------------------
+#  Dynamic Crossover
+# -------------------
+phase1_crossover: 0.7
+
+phase2_crossover: 0.5
+phase2_crossover_upper: 0.6
+phase2_crossover_lower: 0.4
+
+phase3_crossover: 0.3
+phase3_crossover_upper: 0.4
+phase3_crossover_lower: 0.2
+
+# -------------------
 #      Mutation
 # -------------------
-mutation_type: 0
-mutation_rate: 0.1
+mutation_type: 0 # 0 static, 1 linear dynamic, 2 exponential dynamic, 3 ILMDHC, 4 DHMILC
+mutation_rate: 0.4
+
+# -------------------
+#  Dynamic Mutation
+# -------------------
+phase1_mutation: 0.3
+
+phase2_mutation: 0.2
+phase2_mutation_upper: 0.25
+phase2_mutation_lower: 0.1
+
+phase3_mutation: 0.1
+phase3_mutation_upper: 0.15
+phase3_mutation_lower: 0.05
+
+# -------------------
+#      ILMDHC
+# -------------------
+ILMDHC_scale_factor: 1
+Rolling_Average_Range: 10
+Spike_Treshold: 1
+
+# -------------------
+#      Stop
+# -------------------
+number_iterations_stop: 20
+
+# -------------------
+#      Exponent
+# -------------------
+exponent_factor: 1
 
 # -------------------
 #      Graphs
 # -------------------
 dpi: 300
-font_size: 14
-label_size: 12
+font_size: 12
+label_size: 10
 file_name: "PyCrystGA"
+file_name_norm: "Normalised_Fitness"
 percentage_difference_name: "PyCrystGA_PctDiff_Graph"
 
 

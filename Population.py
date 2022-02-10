@@ -21,18 +21,27 @@ class Population:
         self.eltPctDiff = []
         self.mutPctDiff = []
         self.generationNum = []
+        self.populationAmplitude = []
 
+        self.eltFitnessMin = []
         self.eltFitnessMax = []
         self.eltFitnessAvg = []
+        self.eltFitnessMinNorm = []
+        self.eltFitnessMaxNorm = []
         self.eltFitnessStdDev = []
         #@todo add values to this list
-        self.eltRwpStdDev = []
 
+        self.eltRwpStdDev = []
+        self.eltRwpStdDevRollAvg = []
+        self.eltRwpStdDevRollAvgStdDev = []
+
+        self.mutFitnessMin = []
         self.mutFitnessMax = []
         self.mutFitnessAvg = []
         self.mutFitnessStdDev = []
         #@todo add values to this list
         self.mutRwpStdDev = []
+
 
         self.make(self.molFile, self.numMol, self.popSize)
 

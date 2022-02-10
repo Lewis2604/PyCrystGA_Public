@@ -8,12 +8,13 @@ from pprint import pprint
 from Config.Config import *
 
 class TOPAS:
-    def __init__(self, topasPath, templateFile):
+    def __init__(self, topasPath, templateFile, seqFile):
         self.directory = Config.get('working_directory') + 'XRD/' #@todo this is the problem
         self.topasPath = topasPath
         self.templateFile = templateFile
+        self.seqFile = seqFile
 
-    def setDirectory(self, directory):
+    def setWrkDirectory(self, directory):
         self.directory = directory + 'XRD/'
 
     def makeNewInputFile(self, population, structureList, directory):
@@ -35,10 +36,7 @@ class TOPAS:
             for i in range(numOrient[0]):
                 population.parameterDict['Orient'+str(i)].append(str(structure.orientations[i]))
 
-        # print('dictionary')
-        # pprint(population.parameterDict)
-
-        with open(r'C:\PhD\Year_3\TFB1_GA_p21n_sequential.inp', 'r') as inp:
+        with open(self.seqFile, 'r') as inp:
             for line in inp:
                 contents.append(line)
 
@@ -76,18 +74,10 @@ class TOPAS:
                 z+=1
             d = run.search(line)
             if d:
-                line = run.sub('num_runs ' + str(len(population.structures)), line)
+                line = run.sub('num_runs ' + str(len(structureList)), line)
             e = file.search(line)
             if e:
-                # print(self.directory)
-                # newPath = os.path.normpath(self.directory) + "\\"
-                # print('newPath')
-                # print(newPath)
                 line = file.sub('   out ' + '\"' + self.directory + "rwp.txt" + '\"' + " append", line)
-                # line = file.sub(self.directory.replace('/', '\\'), line)
-                # line = file.sub(str(os.path.normpath(self.directory)), line)
-                # line = file.sub('   out' + "\"" + os.path.normpath(self.directory) + "\"" + 'append', line)
-
 
             newContents.append(line)
 

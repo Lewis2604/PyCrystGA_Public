@@ -3,14 +3,15 @@
 # -------------------
 
 num_mol: "1"
-mol_file: "C:/PhD/Year_3/Algorithm/TFB Crystal Structure/TFB_labels.mol"
+#mol_file: "C:/PhD/Year_3/Algorithm/TFBCrystalStructure/TFB_labels.mol"
+mol_file: None
 working_directory: "C:/PhD/Year_3/Algorithm/Test/LinearDynamic/1/"
-
+num_tors: None
 # -------------------
 #     Population
 # -------------------
 population_size: 100
-number_of_generations: 1600
+number_of_generations: 500
 
 # -------------------
 #      Crossover

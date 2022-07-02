@@ -66,9 +66,10 @@ class Statistics():
             print("Phase 3 Mutation Lower:  " + str(PyCrystGA.phase3MutLower), file=f)
         return
 
-    def writeNumEvalsToFile(directory, numEvals):
+    def writeNumEvalsToFile(directory, numEvals, gen):
         f = open(directory + "Run Info.txt", "a")
         # print("Degrees of Freedom: " + str())
+        print("Generation:  " + str(gen), file=f)
         print("Number of Fitness Evals:  " + str(numEvals), file=f)
         return
 
@@ -98,7 +99,7 @@ class Statistics():
         self.logbook.record(gen=generation, **self.multiStats.compile(population.structures))
         self.recordElt = self.stats.compile(population.structures)
         self.logbookElt = Toolbox.tools.Logbook()
-        self.logbookElt.header = "gen", "std", "min", "avg", "max", "min"
+        self.logbookElt.header = "gen", "std", "avg", "min", "max"
         self.logbookElt.record(gen=generation, **self.recordElt)
 
         self.writeToFile([
@@ -150,7 +151,7 @@ class Statistics():
         self.logbook.record(gen=generation, **self.multiStats.compile(population.structures))
         self.recordMut = self.stats.compile(population.structures)
         self.logbookMut = Toolbox.tools.Logbook()
-        self.logbookMut.header = "gen", "std", "min", "avg", "max", "min"
+        self.logbookMut.header = "gen", "std", "avg", "min", "max"
         self.logbookMut.record(gen=generation, **self.recordMut)
 
         self.writeToFile([

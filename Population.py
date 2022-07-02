@@ -4,8 +4,9 @@ import collections
 
 
 class Population:
-    def __init__(self, molFile, numMol, popSize):
+    def __init__(self, molFile, numTors, numMol, popSize):
         self.molFile = molFile
+        self.numTors = numTors
         self.numMol = numMol
         self.popSize = popSize
         self.identifier = token_hex()
@@ -15,6 +16,8 @@ class Population:
         self.crossovers = []
         self.xoverOffspring = []
         self.mutants = []
+
+        self.rwpVals = []
 
         self.parameterDict = collections.defaultdict(list)
 
@@ -43,11 +46,11 @@ class Population:
         self.mutRwpStdDev = []
 
 
-        self.make(self.molFile, self.numMol, self.popSize)
+        self.make(self.molFile, self.numTors, self.numMol, self.popSize)
 
-    def make(self, molFile, numMol, popSize):
+    def make(self, molFile, numTors, numMol, popSize):
         for structure in range(popSize):
-            self.structures.append(Structure(molFile, numMol))
+            self.structures.append(Structure(molFile, numTors, numMol))
 
     def clearClones(self):
         self.clones = []
